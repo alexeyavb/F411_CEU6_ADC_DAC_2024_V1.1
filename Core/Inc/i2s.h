@@ -16,6 +16,24 @@
   *
   ******************************************************************************
   */
+
+ /**
+  * PLL FRQ
+const uint32_t I2SFreq[3] = {44100, 48000, 96000};
+#if defined(STM32F411xE) && defined(USE_MCLK_OUT) // Makefile compile flag
+const I2S_CLK_CONFIG I2S_Clk_Config24[3]  = {
+{271, 2, 6, 0, 0x0B06EAB0}, // 44.1081
+{258, 3, 3, 1, 0x0BFF6DB2}, // 47.9911
+{344, 2, 3, 1, 0x17FEDB64}  // 95.9821
+};
+#else
+const I2S_CLK_CONFIG I2S_Clk_Config24[3]  = {
+{429, 4, 19, 0, 0x0B065E56}, // 44.0995  
+{384, 5, 12, 1, 0x0C000000}, // 48.0000  
+{424, 3, 11, 1, 0x1800ED70}  // 96.0144  
+};
+  * 
+ */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __I2S_H__

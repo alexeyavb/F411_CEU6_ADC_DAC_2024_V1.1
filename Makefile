@@ -23,7 +23,8 @@ TARGET = F411_CEU6_ADC_DAC_2024_V1.1
 DEBUG = 1
 # optimization
 OPT = -Og
-
+# USB LL Stack
+USE_EXTENED_USB_LL_STACK = 0
 
 #######################################
 # paths
@@ -37,43 +38,63 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 Core/Src/main.c \
+newlib_lock_glue.c \
+Core/Src/system_stm32f4xx.c \
+Core/Src/syscalls.c \
+Core/Src/sysmem.c \
+Core/Src/stm32f4xx_it.c \
+Core/Src/stm32f4xx_hal_msp.c \
+Core/Src/stm32f4xx_hal_timebase_tim.c \
 Core/Src/gpio.c \
 Core/Src/crc.c \
 Core/Src/dma.c \
 Core/Src/i2s.c \
-Core/Src/stm32f4xx_it.c \
-Core/Src/stm32f4xx_hal_msp.c \
-Core/Src/stm32f4xx_hal_timebase_tim.c \
-USB_DEVICE/App/usb_device.c \
-USB_DEVICE/App/usbd_desc.c \
-USB_DEVICE/App/usbd_audio_if.c \
-USB_DEVICE/Target/usbd_conf.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
-Core/Src/system_stm32f4xx.c \
-Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c \
-Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c \
-Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c \
-Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Src/usbd_audio.c
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c \
+Common/Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO_10/Src/usbd_audio.c \
+USB_Devcie/AUD_Streaming10/Src/usbd_conf.c \
+USB_Devcie/AUD_Streaming10/Src/usbd_desc.c \
+Common/Streaming/Src/usbd_audio_10_config_descriptors.c \
+Common/Streaming/Src/usbd_audio_if.c \
+Common/Streaming/Src/audio_usb_nodes.c \
+Common/Streaming/Src/audio_usb_playback_session.c \
+Common/Streaming/Src/audio_dummyspeaker_node.c
+
+#Common/Streaming/Src/audio_dummymic_node.c
+#Common/Streaming/Src/audio_usb_recording_session.c
+
+
+
+
+#use usb exteneded stack for component 10 lib
+ifdef USE_EXTENED_USB_LL_STACK
+	C_SOURCES += Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core_ex.c
+else
+	C_SOURCES += Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core_ex.c
+endif
+C_SOURCES += \
+Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c \
+Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+
 
 # ASM sources
 ASM_SOURCES =  \
@@ -126,8 +147,17 @@ AS_DEFS =
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F411xE \
--DSTM32_THREAD_SAFE_STRATEGY=2
+-DUSE_MATH_FF \
+-DUSE_USB_FS \
+-DUSE_USB_AUDIO_CLASS_10 \
+-DUSE_USB_AUDIO_PLAYBACK \
+-DUSE_AUDIO_SPEAKER_DUMMY
 
+
+# -DDEBUG_SPEAKER_NODE
+# -DUSE_USB_AUDIO_RECORDING
+# -DUSE_AUDIO_DUMMY_MIC
+# -DUSE_AUDIO_USB_INTERRUPT
 
 # AS includes
 AS_INCLUDES = 
@@ -135,20 +165,26 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
--IUSB_DEVICE/App \
--IUSB_DEVICE/Target \
+-ICore/USB_CORE/Core/Inc \
+-ICore/USB_CORE/Class/AUDIO/Inc \
+-ICore/USB_AUDIO/Inc  \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
--IMiddlewares/ST/STM32_USB_Device_Library/Core/Inc \
--IMiddlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc \
+-IDrivers/CMSIS/Include \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
--IDrivers/CMSIS/Include
+-IDrivers/BSP/STM32F411/ \
+-IDrivers/HAL_USB_Library \
+-IUSB_Devcie/AUD_Streaming10/Inc \
+-ICommon/Streaming/Inc \
+-ICommon/Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO_10/Inc \
+-ICommon/Middlewares/ST/STM32_USB_Device_Library/Core/Inc \
+-IDrivers/HAL_USB_Library
 
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
-CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+CFLAGS += $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
@@ -195,8 +231,13 @@ $(BUILD_DIR)/%.o: %.S Makefile | $(BUILD_DIR)
 	$(AS) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+#	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+#	$(SZ) $@
+	@echo "---------------------   SIZE   ----------------------"
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $@ -Wl,--print-memory-usage
 	$(SZ) $@
+	@echo ""
+	@echo "-----------------------------------------------------"
 
 $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(HEX) $< $@

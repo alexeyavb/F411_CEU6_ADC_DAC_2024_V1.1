@@ -6,33 +6,38 @@
             "includePath": [
                 "${workspaceFolder}/Core/**",
                 "${workspaceFolder}/Drivers/**",
-                "${workspaceFolder}/Middlewares/**",
-                "${workspaceFolder}/USB_DEVICE/**",
-                "${workspaceFolder}/USB_DEVICE/App/",
-                "${workspaceFolder}/USB_DEVICE/Target/",
+                "${workspaceFolder}/Common/**",
+                "${workspaceFolder}/Common/Streaming/Inc",
+                "${workspaceFolder}/Common/Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO_10/Inc",
+                "${workspaceFolder}/Common/Middlewares/ST/STM32_USB_Device_Library/Core/Inc",
+                "${workspaceFolder}/USB_Devcie/AUD_Streaming10/Inc"
             ],
             "defines": [
                 "STM32F411xE",
                 "USE_HAL_DRIVER",
-                "USE_LL_DRIVER",
-                "USE_MATH_FF"
+                "USE_MATH_FF",
+                "USE_USB_FS",
+                "USE_USB_AUDIO_CLASS_10",
+                "USE_USB_AUDIO_PLAYBACK",
+                "USE_USB_AUDIO_RECORDING",
+                // "DEBUG_SPEAKER_NODE",
+                "USE_AUDIO_DUMMY_MIC",
+                "USE_AUDIO_SPEAKER_DUMMY"
+
             ],
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-arm",
-            "compilerPathInCppPropertiesJson": "C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe",
             "mergeConfigurations": false,
             "browse": {
                 "path": [
-                    "${workspaceFolder}/",
-                    "${workspaceFolder}/Middlewares/",
-                    "${workspaceFolder}/Drivers/",
-                    "${workspaceFolder}/USB_DEVICE/App",                    
-                    "${workspaceFolder}/USB_DEVICE/Target",
-                    "${workspaceFolder}/Core/Src",
-                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Src/",
-                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/COMPOSITE/Src/",
-                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CustomHID/Src/",
+                    "${workspaceFolder}/**",
+                    "${workspaceFolder}/Drivers/**",
+                    "${workspaceFolder}/Core/Src/**",
+                    "${workspaceFolder}/Common/**",
+                    "${workspaceFolder}/Common/Middlewares/**",
+                    "${workspaceFolder}/Common/Streaming/**",
+                    "${workspaceFolder}/Common/Middlewares/ST/STM32_USB_Device_Library/**"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             }

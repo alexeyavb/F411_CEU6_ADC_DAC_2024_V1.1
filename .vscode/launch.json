@@ -4,7 +4,7 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceRoot}",
-            "executable": "build/F411_CEU6_ADC_DAC_2024.elf",
+            "executable": "build/F411_CEU6_ADC_DAC_2024_V1.1.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "stlink",

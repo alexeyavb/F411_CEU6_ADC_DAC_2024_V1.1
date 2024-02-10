@@ -21,9 +21,8 @@
 #include "crc.h"
 #include "dma.h"
 #include "i2s.h"
-#include "usb_device.h"
 #include "gpio.h"
-
+#include "usb_audio.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -60,6 +59,15 @@ static void MX_NVIC_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+extern USBD_AUDIO_InterfaceCallbacksfTypeDef audio_class_interface;
+USBD_HandleTypeDef USBD_Device;
+#if USE_AUDIO_TIMER_VOLUME_CTRL
+TIM_HandleTypeDef    TimHandle;
+/* Prescaler declaration */
+uint32_t uwPrescalerValue = 0;
+static HAL_StatusTypeDef Timer_Init(void);
+
+#endif /* USE_AUDIO_TIMER_VOLUME_CTRL */
 
 /* USER CODE END 0 */
 
@@ -70,7 +78,7 @@ static void MX_NVIC_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,10 +106,16 @@ int main(void)
   MX_I2S2_Init();
   MX_I2S1_Init();
   MX_CRC_Init();
-  MX_USB_DEVICE_Init();
+  MX_NVIC_Init();
+  
+  //MX_USB_DEVICE_Init();
+  USBD_Init(&USBD_Device, &AUDIO_Desc, 0);
+  USBD_RegisterClass(&USBD_Device, USBD_AUDIO_CLASS);
+  USBD_AUDIO_RegisterInterface(&USBD_Device, &audio_class_interface);
+  USBD_Start(&USBD_Device);
 
   /* Initialize interrupts */
-  MX_NVIC_Init();
+  
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -138,10 +152,11 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
   RCC_OscInitStruct.PLL.PLLN = 384;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+  RCC_OscInitStruct.PLL.PLLM = 25;
+    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 8;
+  
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -171,11 +186,19 @@ void PeriphCommonClock_Config(void)
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
   /** Initializes the peripherals clock
+   * I2S PLLSCK->192K
   */
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_TIM|RCC_PERIPHCLK_I2S;
-  PeriphClkInitStruct.PLLI2S.PLLI2SN = 384;
+  // MCO Enabled 48K, 0.001 THD
+  PeriphClkInitStruct.PLLI2S.PLLI2SN = 258;
   PeriphClkInitStruct.PLLI2S.PLLI2SM = 25;
-  PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
+  PeriphClkInitStruct.PLLI2S.PLLI2SR = 3;
+
+  // MCO Enabled 96K, 0.001 THD
+  // PeriphClkInitStruct.PLLI2S.PLLI2SN = 344;
+  // PeriphClkInitStruct.PLLI2S.PLLI2SM = 25;
+  // PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
+
   PeriphClkInitStruct.TIMPresSelection = RCC_TIMPRES_ACTIVATED;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
@@ -205,7 +228,7 @@ static void MX_NVIC_Init(void)
   HAL_NVIC_SetPriority(SPI1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(SPI1_IRQn);
   /* SPI2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SPI2_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(SPI2_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(SPI2_IRQn);
   /* DMA2_Stream2_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 0, 0);
@@ -253,6 +276,11 @@ void Error_Handler(void)
   {
   }
   /* USER CODE END Error_Handler_Debug */
+}
+
+void USBD_error_handler(void)
+{
+  Error_Handler();
 }
 
 #ifdef  USE_FULL_ASSERT

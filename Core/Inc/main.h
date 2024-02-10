@@ -28,10 +28,16 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_pcd.h"
+#include "stm32f4xx_hal_pcd_ex.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "usbd_core.h"
+#include "usbd_desc.h"
+#include "usbd_audio.h"
+#include "usbd_audio_if.h"
+#include "stm32f411xe_audio_ex.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

@@ -142,6 +142,12 @@
 
 /* Tip: To avoid modifying this file each time you need to use different HSE,
    ===  you can define the HSE value in your toolchain compiler preprocessor. */
+#ifndef USB_OTG_HS
+#ifdef STM32F411xE
+// Затычка, на 411 нет HS
+#define USB_OTG_HS          ((USB_OTG_GlobalTypeDef *) USB_OTG_FS_PERIPH_BASE)
+#endif
+#endif
 
 /* ########################### System Configuration ######################### */
 /**
