@@ -1,0 +1,34 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "build/F411_CEU6_ADC_DAC_2024.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "stlink",
+            "runToEntryPoint": "main",
+            "preLaunchTask": "build",
+            "device": "STM32F411CE",
+            "svdFile": "C:\\ST\\STM32CubeCLT\\STMicroelectronics_CMSIS_SVD\\STM32F411.svd",
+//            "svdFile": "${workspaceRoot}/Docs/STM32F411.svd",
+            "configFiles": [
+/*                 
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg",
+ */            ],
+ /*
+            "swoConfig": {
+                "enabled": true,
+                "cpuFrequency": 8000000,
+                "swoFrequency": 2000000,
+                "source": "probe",
+                "decoders": [
+                    { "type": "console", "label": "ITM", "port": 0 },
+                ],
+            },
+        },
+*/},
+    ]
+}

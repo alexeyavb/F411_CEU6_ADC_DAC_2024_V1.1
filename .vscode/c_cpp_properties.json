@@ -1,0 +1,42 @@
+{
+    "configurations": [
+        {
+            "name": "STM32",
+            "compilerPath": "C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe",
+            "includePath": [
+                "${workspaceFolder}/Core/**",
+                "${workspaceFolder}/Drivers/**",
+                "${workspaceFolder}/Middlewares/**",
+                "${workspaceFolder}/USB_DEVICE/**",
+                "${workspaceFolder}/USB_DEVICE/App/",
+                "${workspaceFolder}/USB_DEVICE/Target/",
+            ],
+            "defines": [
+                "STM32F411xE",
+                "USE_HAL_DRIVER",
+                "USE_LL_DRIVER",
+                "USE_MATH_FF"
+            ],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-arm",
+            "compilerPathInCppPropertiesJson": "C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe",
+            "mergeConfigurations": false,
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/",
+                    "${workspaceFolder}/Middlewares/",
+                    "${workspaceFolder}/Drivers/",
+                    "${workspaceFolder}/USB_DEVICE/App",                    
+                    "${workspaceFolder}/USB_DEVICE/Target",
+                    "${workspaceFolder}/Core/Src",
+                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Src/",
+                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/COMPOSITE/Src/",
+                    "${workspaceFolder}/Middlewares/ST/STM32_USB_Device_Library/Class/CustomHID/Src/",
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
