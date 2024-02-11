@@ -41,8 +41,8 @@
 #define USB_AUDIO_CONFIG_PLAY_CHANNEL_COUNT          0x02 /* stereo audio  */
 #define USB_AUDIO_CONFIG_PLAY_CHANNEL_MAP            0x03 /* channels Left and right */
 /* next two values define the supported resolution  currently expansion supports only 16 bit and 24 bits resolutions @TODO add other resolution support*/
-// #define USB_AUDIO_CONFIG_PLAY_RES_BIT                16 /* 24 bit per sample */
-// #define USB_AUDIO_CONFIG_PLAY_RES_BYTE               2 /* 3 bytes */   
+// #define USB_AUDIO_CONFIG_PLAY_RES_BIT                24 /* 24 bit per sample */
+// #define USB_AUDIO_CONFIG_PLAY_RES_BYTE               3 /* 3 bytes */   
 #define USB_AUDIO_CONFIG_PLAY_RES_BIT                16 /* 24 bit per sample */
 #define USB_AUDIO_CONFIG_PLAY_RES_BYTE                2 /* 3 bytes */   
 

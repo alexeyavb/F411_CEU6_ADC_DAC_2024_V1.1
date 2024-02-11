@@ -172,14 +172,7 @@ static int8_t  USB_AudioPlaybackSessionStart(AUDIO_USBSession_t*  play_session)
     commands.private_data = (uint32_t)&PlaybackSpeakerOutputNode;
     commands.SetMute = PlaybackSpeakerOutputNode.SpeakerMute;
     commands.SetCurrentVolume = PlaybackSpeakerOutputNode.SpeakerSetVolume;
-    PlaybackFeatureUnitNode.CFStart(&commands,(uint32_t)&PlaybackFeatureUnitNode);
-    
-    //Axel beg
-    //@brief buffer format?? PCM PhLJ, RJ? do convert this?
-    // if (HAL_I2S_Transmit_DMA(&hi2s2, &play_session->buffer.data, play_session->buffer.size) != HAL_OK)    {
-    //   Error_Handler();
-    // }
-    //Axel end
+    PlaybackFeatureUnitNode.CFStart(&commands,(uint32_t)&PlaybackFeatureUnitNode);  
     play_session->session.state = AUDIO_SESSION_STARTED;
   }
   
@@ -200,10 +193,6 @@ static int8_t  USB_AudioPlaybackSessionStop(AUDIO_USBSession_t*  play_session)
     PlaybackUSBInputNode.IOStop((uint32_t)&PlaybackUSBInputNode);
     PlaybackFeatureUnitNode.CFStop((uint32_t)&PlaybackFeatureUnitNode);
     PlaybackSpeakerOutputNode.SpeakerStop((uint32_t)&PlaybackSpeakerOutputNode);
-    // if (HAL_I2S_DMAStop(&hi2s2) != HAL_OK)    {
-    //   Error_Handler();
-    // }
-
     play_session->session.state = AUDIO_SESSION_STOPPED;
   }
   
@@ -328,10 +317,7 @@ static int8_t  USB_AudioPlaybackSessionCallback(AUDIO_SessionEvent_t  event,
   case AUDIO_UNDERRUN:
     {
      /* restart input and stop output */
-     PlaybackSpeakerOutputNode.SpeakerStop((uint32_t)&PlaybackSpeakerOutputNode);
-    //Axel beg
-    //  HAL_I2S_DMAStop(&hi2s2);
-
+     PlaybackSpeakerOutputNode.SpeakerStop((uint32_t)&PlaybackSpeakerOutputNode);     
 #if USE_AUDIO_PLAYBACK_USB_FEEDBACK
      PlaybackSynchroFirstSofReceived =0;
      PlaybackSynchroEstimatedCodecFrequency = 0;
@@ -339,11 +325,6 @@ static int8_t  USB_AudioPlaybackSessionCallback(AUDIO_SessionEvent_t  event,
      if( play_session->session.state == AUDIO_SESSION_STARTED)
      {
        PlaybackUSBInputNode.IORestart((uint32_t)&PlaybackUSBInputNode);
-        // Axel beg
-        // @brief buffer tr-tr-tr-tr-ttk-tk-t-k-t-k-t-k-t-k--t-k-t on background LeftChanel
-        // if (HAL_I2S_Transmit_DMA(&hi2s2, &play_session->buffer.data, play_session->buffer.size/2) != HAL_OK)    {
-        //   Error_Handler();
-        // }
      }
       break;
     }

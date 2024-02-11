@@ -51,6 +51,7 @@
 #ifdef USE_AUDIO_SPEAKER_DUMMY
 #define  AUDIO_SpeakerInit AUDIO_SPEAKER_DUMMY_Init
 #else /* USE_AUDIO_SPEAKER_DUMMY */
+// For advanced dac
 #define  AUDIO_SpeakerInit AUDIO_SPEAKER_USER_Init
 #endif /* USE_AUDIO_SPEAKER_DUMMY */
 /* Exported types ------------------------------------------------------------*/

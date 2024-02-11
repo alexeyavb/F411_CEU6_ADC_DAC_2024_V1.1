@@ -24,6 +24,8 @@
 #include "usb_audio.h"
 #include "i2s.h"
 /* Private defines -----------------------------------------------------------*/
+#define VOLUME_DB_256_TO_PERCENT(volume_db_256) ((uint8_t)((((int)(volume_db_256) - VOLUME_SPEAKER_MIN_DB_256)*100)/\
+                                                          (VOLUME_SPEAKER_MAX_DB_256 - VOLUME_SPEAKER_MIN_DB_256)))
 /* Private function prototypes -----------------------------------------------*/
 static int8_t  AUDIO_SpeakerDeInit(uint32_t node_handle);
 static int8_t  AUDIO_SpeakerStart(AUDIO_CircularBuffer_t* buffer, uint32_t node_handle);
@@ -297,4 +299,57 @@ static uint16_t  AUDIO_SpeakerGetLastReadCount( uint32_t node_handle)
     
   return read_bytes;
 }
+
+// #if USB_AUDIO_CONFIG_PLAY_RES_BIT == 24  
+/**
+  * @brief  AUDIO_DoPadding_24_32
+  *         padding 24bit  sample to 32 sample by adding zeros .
+  * @param  buff_src(IN):          
+  * @param  data_dest(OUT):          
+  * @param  size(IN):               
+  * @retval None
+  */
+ static void AUDIO_DoPadding_24_32(AUDIO_CircularBuffer_t *buff_src,  uint8_t *data_dest ,  int size)
+ {
+   int k = 0, j = buff_src->rd_ptr;
+   for(int i = 0;i<size;i+=3)
+   {
+     data_dest[k++]=0;
+     for(int p = 0;p<3;p++)
+     {
+       if(j==buff_src->size)
+       {
+         j = 0;
+       }
+       data_dest[k++]=buff_src->data[j++];
+     }
+   }
+ }
+// #endif /* USB_AUDIO_CONFIG_PLAY_RES_BIT == 24   */
+// #if USB_AUDIO_CONFIG_PLAY_RES_BIT == 24
+/**
+  * @brief  AUDIO_DoPadding_24_16
+  *         padding 24bit  sample to 2x16 sample by adding zeros .
+  * @param  buff_src(IN):          
+  * @param  data_dest(OUT):          
+  * @param  size(IN):               
+  * @retval None
+  */
+ static void AUDIO_DoPadding_24_16(AUDIO_CircularBuffer_t *buff_src,  uint8_t *data_dest ,  int size)
+ {
+   int k = 0, j = buff_src->rd_ptr;
+   for(int i = 0;i<size;i+=3)
+   {
+     data_dest[k++]=0;
+     for(int p = 0;p<3;p++)
+     {
+       if(j==buff_src->size)
+       {
+         j = 0;
+       }
+       data_dest[k++]=buff_src->data[j++];
+     }
+   }
+ }
+// #endif
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
