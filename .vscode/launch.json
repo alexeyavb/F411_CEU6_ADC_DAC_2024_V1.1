@@ -11,13 +11,14 @@
             "runToEntryPoint": "main",
             "preLaunchTask": "build",
             "device": "STM32F411CE",
-            "svdFile": "C:\\ST\\STM32CubeCLT\\STMicroelectronics_CMSIS_SVD\\STM32F411.svd",
+            "svdFile": "/opt/ST/STM32CubeCLT/STMicroelectronics_CMSIS_SVD/STM32F411.svd",
 //            "svdFile": "${workspaceRoot}/Docs/STM32F411.svd",
             "configFiles": [
 /*                 
                 "interface/stlink.cfg",
                 "target/stm32f4x.cfg",
  */            ],
+            "showDevDebugOutput": "raw" ,
  /*
             "swoConfig": {
                 "enabled": true,

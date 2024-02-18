@@ -82,14 +82,13 @@ Common/Streaming/Src/audio_dummyspeaker_node.c
 #Common/Streaming/Src/audio_dummymic_node.c
 #Common/Streaming/Src/audio_usb_recording_session.c
 
-
-
-
 #use usb exteneded stack for component 10 lib
 ifdef USE_EXTENED_USB_LL_STACK
-	C_SOURCES += Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core_ex.c
+	C_SOURCES += \
+		Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core_ex.c
 else
-	C_SOURCES += Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core_ex.c
+	C_SOURCES += \
+		Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core_ex.c
 endif
 C_SOURCES += \
 Common/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c \
