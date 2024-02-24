@@ -49,6 +49,9 @@ Core/Src/gpio.c \
 Core/Src/crc.c \
 Core/Src/dma.c \
 Core/Src/i2s.c \
+Core/Src/spi.c \
+Core/Src/tim.c \
+Core/Src/globalvariables.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c \
@@ -67,9 +70,12 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c \
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c \
+Drivers/st7735/st7735.c \
+Drivers/st7735/fonts.c \
 Common/Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO_10/Src/usbd_audio.c \
 USB_Devcie/AUD_Streaming10/Src/usbd_conf.c \
 USB_Devcie/AUD_Streaming10/Src/usbd_desc.c \
@@ -144,8 +150,8 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
--DUSE_HAL_DRIVER \
 -DSTM32F411xE \
+-DUSE_HAL_DRIVER \
 -DUSE_MATH_FF \
 -DUSE_USB_FS \
 -DUSE_USB_AUDIO_CLASS_10 \
@@ -173,6 +179,7 @@ C_INCLUDES =  \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
 -IDrivers/BSP/STM32F411/ \
 -IDrivers/HAL_USB_Library \
+-IDrivers/st7735 \
 -IUSB_Devcie/AUD_Streaming10/Inc \
 -ICommon/Streaming/Inc \
 -ICommon/Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO_10/Inc \

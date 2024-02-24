@@ -20,7 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_audio.h"
-
+#include "globalvariables.h"
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -327,6 +327,7 @@ void HAL_PCD_ISOINIncompleteCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
   * @param  hpcd: PCD handle
   * @retval None
   */
+
 void HAL_PCD_ConnectCallback(PCD_HandleTypeDef *hpcd)
 {
   USBD_LL_DevConnected(hpcd->pData);
@@ -456,6 +457,7 @@ USBD_StatusTypeDef USBD_LL_DeInit(USBD_HandleTypeDef *pdev)
   */
 USBD_StatusTypeDef USBD_LL_Start(USBD_HandleTypeDef *pdev)
 {
+  GlobalUsbStatusFlag = M_USB_STATUS_START;
   HAL_PCD_Start(pdev->pData);
   return USBD_OK;
 }
@@ -467,6 +469,7 @@ USBD_StatusTypeDef USBD_LL_Start(USBD_HandleTypeDef *pdev)
   */
 USBD_StatusTypeDef USBD_LL_Stop(USBD_HandleTypeDef *pdev)
 {
+  GlobalUsbStatusFlag = M_USB_STATUS_STOP;
   HAL_PCD_Stop(pdev->pData);
   return USBD_OK;
 }
@@ -484,6 +487,7 @@ USBD_StatusTypeDef USBD_LL_OpenEP(USBD_HandleTypeDef *pdev,
                                   uint8_t ep_type,
                                   uint16_t ep_mps)
 {
+  GlobalUsbStatusFlag = M_USB_STATUS_OPEN_EP;
   HAL_PCD_EP_Open(pdev->pData,
                   ep_addr,
                   ep_mps,
@@ -500,6 +504,7 @@ USBD_StatusTypeDef USBD_LL_OpenEP(USBD_HandleTypeDef *pdev,
   */
 USBD_StatusTypeDef USBD_LL_CloseEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 {
+  GlobalUsbStatusFlag = M_USB_STATUS_CLOSE_EP;
   USB_DISABLE_EP_BEFORE_CLOSE(ep_addr);
   HAL_PCD_EP_Close(pdev->pData, ep_addr);
   return USBD_OK;
@@ -513,6 +518,7 @@ USBD_StatusTypeDef USBD_LL_CloseEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
   */
 USBD_StatusTypeDef USBD_LL_FlushEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 {
+  GlobalUsbStatusFlag = M_USB_STATUS_FLUSH_EP;
   HAL_PCD_EP_Flush(pdev->pData, ep_addr);
   return USBD_OK;
 }
@@ -525,6 +531,7 @@ USBD_StatusTypeDef USBD_LL_FlushEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
   */
 USBD_StatusTypeDef USBD_LL_StallEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 {
+  GlobalUsbStatusFlag = M_USB_STATUS_STALL_EP;
   HAL_PCD_EP_SetStall(pdev->pData, ep_addr);
   return USBD_OK;
 }
@@ -537,6 +544,7 @@ USBD_StatusTypeDef USBD_LL_StallEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
   */
 USBD_StatusTypeDef USBD_LL_ClearStallEP(USBD_HandleTypeDef *pdev, uint8_t ep_addr)
 {
+  GlobalUsbStatusFlag = M_USB_STATUS_CLR_STALL_EP;
   HAL_PCD_EP_ClrStall(pdev->pData, ep_addr);
   return USBD_OK; 
 }
@@ -633,7 +641,7 @@ void USBD_LL_Delay(uint32_t Delay)
   */
 static USBD_StatusTypeDef USBD_LL_Setup_Fifo(void)
 {
-  
+  GlobalUsbStatusFlag = M_USB_STATUS_SETUP_FIFO;
   uint16_t tx_fifo_size[5]={0};/* TX_FIFO allocation*/
   uint8_t max_tx_ep_num = 0;/* The Max TX_EP_NUMBER*/
   uint16_t tx_fifo_used_size = 0; /* total usage of TX_FIFO*/
@@ -677,11 +685,12 @@ static USBD_StatusTypeDef USBD_LL_Setup_Fifo(void)
   {
 #if  USE_USB_AUDIO_RECORDING   
  tx_fifo_size[USB_AUDIO_CONFIG_RECORD_EP_IN&0x7F] += USB_FIFO_WORD_SIZE - (tx_fifo_used_size + rx_fifo_size);
-#else /* USE_USB_AUDIO_RECORDING */
+#endif /* USE_USB_AUDIO_RECORDING */
+
 #if USE_USB_AUDIO_PLAYBACK
   rx_fifo_size = USB_FIFO_WORD_SIZE - tx_fifo_used_size;
 #endif /* USE_USB_AUDIO_PLAYBACK */
-#endif /* USE_USB_AUDIO_RECORDING */
+
   }
   else
   {

@@ -57,7 +57,7 @@
 
 #define USE_AUDIO_TIMER_VOLUME_CTRL  0   
 // #define  USB_AUDIO_CONFIG_PLAY_BUFFER_SIZE (1024 * 10)   
-#define  USB_AUDIO_CONFIG_PLAY_BUFFER_SIZE (1024 * 8)   
+#define  USB_AUDIO_CONFIG_PLAY_BUFFER_SIZE (1024 * 4)   
 #endif /* USE_USB_AUDIO_PLAYBACK*/
  
 #if USE_USB_AUDIO_RECORDING   
@@ -71,8 +71,8 @@
    
 /* definition of the list of frequencies */
 #define USB_AUDIO_CONFIG_RECORD_USE_FREQ_192_K          0 /* to set by user:  1 : to use , 0 to not support*/
-#define USB_AUDIO_CONFIG_RECORD_USE_FREQ_96_K           0 /* to set by user:  1 : to use , 0 to not support*/
-#define USB_AUDIO_CONFIG_RECORD_USE_FREQ_48_K           1 /* to set by user:  1 : to use , 0 to not support*/
+#define USB_AUDIO_CONFIG_RECORD_USE_FREQ_96_K           1 /* to set by user:  1 : to use , 0 to not support*/
+#define USB_AUDIO_CONFIG_RECORD_USE_FREQ_48_K           0 /* to set by user:  1 : to use , 0 to not support*/
 #define USB_AUDIO_CONFIG_RECORD_USE_FREQ_44_1_K         0 /* to set by user:  1 : to use , 0 to not support*/
 #define USB_AUDIO_CONFIG_RECORD_USE_FREQ_32_K           0 /* to set by user:  1 : to use , 0 to not support*/
 #define USB_AUDIO_CONFIG_RECORD_USE_FREQ_16_K           0 /* to set by user:  1 : to use , 0 to not support*/

@@ -21,7 +21,11 @@
 #include "crc.h"
 #include "dma.h"
 #include "i2s.h"
+#include "spi.h"
 #include "gpio.h"
+#include "tim.h"
+#include "fonts.h"
+#include "st7735.h"
 #include "usb_audio.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -78,7 +82,18 @@ static HAL_StatusTypeDef Timer_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  
+void checkborder(void){
+	for (int x = 0; x < ST7735_WIDTH; x++) {
+		ST7735_DrawPixel(x, 0, ST7735_RED);
+		ST7735_DrawPixel(x, ST7735_HEIGHT - 1, ST7735_RED);
+	}
+
+	for (int y = 0; y < ST7735_HEIGHT; y++) {
+		ST7735_DrawPixel(0, y, ST7735_RED);
+		ST7735_DrawPixel(ST7735_WIDTH - 1, y, ST7735_RED);
+	}
+	ST7735_FillScreen(ST7735_BLACK);
+}
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -101,18 +116,35 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
   MX_DMA_Init();
-  MX_I2S2_Init();
-  MX_I2S1_Init();
   MX_CRC_Init();
-  MX_NVIC_Init();
+  MX_GPIO_Init();  
+  MX_I2S1_Init();
+  MX_I2S2_Init();
+  MX_SPI5_Init();  
+  MX_TIM4_Init();
   
+  MX_NVIC_Init();  
+
+  HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
+  
+  ST7735_Init();
+  SetPWM(70);
+  ST7735_FillScreen(ST7735_BLACK);
+  // checkborder();
+  uint16_t ypos = 0, y_step = 9U;
+  ST7735_WriteString(0,ypos, "Starting device...", Font_7x10, ST7735_CYAN, ST7735_BLACK);
+  ST7735_WriteString(0,ypos+=y_step, "USB Init", Font_7x10, ST7735_CYAN, ST7735_BLACK);
   //MX_USB_DEVICE_Init();
+
   USBD_Init(&USBD_Device, &AUDIO_Desc, 0);
   USBD_RegisterClass(&USBD_Device, USBD_AUDIO_CLASS);
   USBD_AUDIO_RegisterInterface(&USBD_Device, &audio_class_interface);
+  
+  ST7735_WriteString(0,ypos+=y_step, "USB Start", Font_7x10, ST7735_CYAN, ST7735_BLACK);
   USBD_Start(&USBD_Device);
+  
+  ST7735_WriteString(0,ypos+=y_step, "USB Started", Font_7x10, ST7735_CYAN, ST7735_BLACK);
 
   /* Initialize interrupts */
   
@@ -147,6 +179,7 @@ void SystemClock_Config(void)
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
+  * 96MHz main frq, 48MHz APB1, 48MHz main PLL
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
@@ -154,7 +187,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLN = 384;
   RCC_OscInitStruct.PLL.PLLM = 25;
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 8;
   
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -190,14 +223,14 @@ void PeriphCommonClock_Config(void)
   */
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_TIM|RCC_PERIPHCLK_I2S;
   // MCO Enabled 48K, 0.001 THD
-  PeriphClkInitStruct.PLLI2S.PLLI2SN = 258;
-  PeriphClkInitStruct.PLLI2S.PLLI2SM = 25;
-  PeriphClkInitStruct.PLLI2S.PLLI2SR = 3;
+  // PeriphClkInitStruct.PLLI2S.PLLI2SN = 258;
+  // PeriphClkInitStruct.PLLI2S.PLLI2SM = 25;
+  // PeriphClkInitStruct.PLLI2S.PLLI2SR = 3;
 
   // MCO Enabled 96K, 0.001 THD
-  // PeriphClkInitStruct.PLLI2S.PLLI2SN = 344;
-  // PeriphClkInitStruct.PLLI2S.PLLI2SM = 25;
-  // PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
+   PeriphClkInitStruct.PLLI2S.PLLI2SN = 344;
+   PeriphClkInitStruct.PLLI2S.PLLI2SM = 25;
+   PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
 
   PeriphClkInitStruct.TIMPresSelection = RCC_TIMPRES_ACTIVATED;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
